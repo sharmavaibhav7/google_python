@@ -14,7 +14,12 @@
 # modify the passed in list.
 def remove_adjacent(nums):
   # +++your code here+++
-  return
+  i=0
+  while(i+1<=len(nums)-1):
+    if nums[i]==nums[i+1]:
+      nums.pop(i+1)
+    i+=1    
+  return nums
 
 
 # E. Given two lists sorted in increasing order, create and return a merged
@@ -23,7 +28,29 @@ def remove_adjacent(nums):
 # pass of both lists.
 def linear_merge(list1, list2):
   # +++your code here+++
-  return
+  list3=[]
+  i=j=0
+  while(i<len(list1) and j<len(list2)):
+    if(list1[i]<list2[j]):
+      list3.append(list1[i])
+      i+=1
+    elif(list1[i]>list2[j]):
+      list3.append(list2[j])
+      j+=1
+    elif(list1[i]==list2[j]):
+      list3.append(list1[i])
+      list3.append(list2[j])
+      i+=1
+      j+=1
+    
+  if(i==len(list1)):
+    for k in range(j,len(list2)):
+      list3.append(list2[k])
+  elif(j==len(list2)):
+    for k in range(i,len(list1)):
+      list3.append(list1[k])
+  
+  return list3
 
 # Note: the solution above is kind of cute, but unforunately list.pop(0)
 # is not constant time with the standard python list implementation, so
@@ -41,18 +68,18 @@ def test(got, expected):
     prefix = ' OK '
   else:
     prefix = '  X '
-  print '%s got: %s expected: %s' % (prefix, repr(got), repr(expected))
+  print('%s got: %s expected: %s' % (prefix, repr(got), repr(expected)))
 
 
 # Calls the above functions with interesting inputs.
 def main():
-  print 'remove_adjacent'
+  print('remove_adjacent')
   test(remove_adjacent([1, 2, 2, 3]), [1, 2, 3])
   test(remove_adjacent([2, 2, 3, 3, 3]), [2, 3])
   test(remove_adjacent([]), [])
 
-  print
-  print 'linear_merge'
+  print()
+  print('linear_merge')
   test(linear_merge(['aa', 'xx', 'zz'], ['bb', 'cc']),
        ['aa', 'bb', 'cc', 'xx', 'zz'])
   test(linear_merge(['aa', 'xx'], ['bb', 'cc', 'zz']),
