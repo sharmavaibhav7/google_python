@@ -44,14 +44,43 @@ import sys
 # You could write a helper utility function that reads a file
 # and builds and returns a word/count dict for it.
 # Then print_words() and print_top() can just call the utility function.
+def get_dict(filename):
+  token=[]
+  dict={}
+  f = open(filename,'r')
+  for line in f:
+    for t in line.split():
+      token.append(t.lower())
+      
+  for t in token:
+    if t in dict.keys():
+      dict[t]+=1
+    else:
+      dict[t]=1
+      
+  return dict
 
+def print_words(filename):
+  dict = get_dict(filename)
+  for k,v in zip(dict.keys(),dict.values()):
+    print(k," ",v)
+
+def myfn(d):
+  return d.values()
+  
+def print_top(filename):
+  dict=get_dict(filename)
+  s_dict = sorted(dict, key = dict.get, reverse=True)
+  # print(s_dict)
+  for i in range(20):
+    print(s_dict[i]," ",dict[s_dict[i]])
 ###
 
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
 def main():
   if len(sys.argv) != 3:
-    print 'usage: ./wordcount.py {--count | --topcount} file'
+    print('usage: python wordcount.py {--count | --topcount} file')
     sys.exit(1)
 
   option = sys.argv[1]
@@ -61,7 +90,7 @@ def main():
   elif option == '--topcount':
     print_top(filename)
   else:
-    print 'unknown option: ' + option
+    print('unknown option: ' + option)
     sys.exit(1)
 
 if __name__ == '__main__':
