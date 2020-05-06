@@ -51,7 +51,7 @@ def get_dict(filename):
   for line in f:
     for t in line.split():
       token.append(t.lower())
-      
+  f.close()    
   for t in token:
     if t in dict.keys():
       dict[t]+=1
@@ -70,7 +70,7 @@ def myfn(d):
   
 def print_top(filename):
   dict=get_dict(filename)
-  s_dict = sorted(dict, key = dict.get, reverse=True)
+  s_dict = sorted(dict, key = dict.get, reverse=True) #key = dict.__getitem__ for performance boost
   # print(s_dict)
   for i in range(20):
     print(s_dict[i]," ",dict[s_dict[i]])
