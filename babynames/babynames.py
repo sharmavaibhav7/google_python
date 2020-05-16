@@ -46,15 +46,16 @@ def extract_names(filename):
   text = f.read()
   f.close()
 
-  year_pat = re.findall(r'(<.+?>Popularity in )(\d+)(<.+?>)',text)
-  # print(year_pat[0][1])
-  namerank_pat = re.findall(r'(<.+?><.+?>)(\d+)(<.+?><.+?>)(\w+)(<.+?><.+?>)(\w+)(<.+?>)',text)
+  year_pat = re.findall(r'Popularity in (\d+)',text)
+  # print(year_pat)
+  namerank_pat = re.findall(r'<.+?><.+?>(\d+)<.+?><.+?>(\w+)<.+?><.+?>(\w+)<.+?>',text)
+  # print(namerank_pat)
   nr_dict={}
   for nr in namerank_pat:
-    nr_dict[nr[3]]=nr[1]
-    nr_dict[nr[5]]=nr[1]
+    nr_dict[nr[1]]=nr[0]
+    nr_dict[nr[2]]=nr[0]
     
-  nr_list = [str(year_pat[0][1])]
+  nr_list = year_pat
     
   for k in sorted(nr_dict.keys()):
     nr_list.append(str(k)+" "+str(nr_dict[k]))
@@ -86,23 +87,24 @@ def main():
   # For each filename, get the names, then either print the text output
   # or write it to a summary file
   dir = os.getcwd()
+  # filenames = os.listdir(os.path.join(dir,args))
   for arg in args:
     fpath = os.path.join(dir,arg)
     try:
       f = open(fpath, 'r')
       f.close()
       nr_list = extract_names(fpath)
+      summ_txt = '\n'.join(nr_list)+'\n'
     except IOError:
       sys.stderr.write('Problem reading file '+arg)
       
     if summary:
-      f = open("summary"+nr_list[0]+".txt","w+")
-      for nr in nr_list[1:]:
-        f.write(nr+'\n')
+      f = open(arg+".summary","w+")
+      f.write(summ_txt)
       f.close()
       
     else:
-      print(nr_list)
+      print(summ_txt)
   
 if __name__ == '__main__':
   main()
