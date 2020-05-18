@@ -18,6 +18,10 @@ Here's what a puzzle url looks like:
 10.254.254.28 - - [06/Aug/2007:00:13:48 -0700] "GET /~foo/puzzle-bar-aaab.jpg HTTP/1.0" 302 528 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
 """
 
+def sec(x):
+  t = x.split('-')
+  t = t[-1].split('.')[0]
+  return t
 
 def read_urls(filename):
   """Returns a list of the puzzle urls from the given log file,
@@ -30,13 +34,16 @@ def read_urls(filename):
   text = f.read()
   urls = re.findall(r'GET (\S*puzzle\S*) HTTP',text)
   urls = list(dict.fromkeys(urls))        #removing duplicates
-  urls = sorted(urls)
+  urls = sorted(urls, key = sec)
   for i in range(len(urls)):
     urls[i] = 'http://'+website[0]+urls[i]
     
   # print(urls[:20])
     
   return urls
+
+def myfn(x):
+  return int(x[3:])
 
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
@@ -55,10 +62,18 @@ def download_images(img_urls, dest_dir):
   for count,url in enumerate(img_urls):
     urllib.request.urlretrieve(url, os.path.join(dest_dir,'img'+str(count)))
   
+  imgs = os.listdir(dest_dir)
+  if 'index.html' in imgs:
+    imgs.remove('index.html')
+  imgs = sorted(imgs, key = myfn)
+  
   # Build index.html
-  index_path = 
   f = open(os.path.join(dest_dir,'index.html'),'w+')
-  f.write(
+  f.write("<verbatim>\n<html>\n<body>")
+  for img in imgs:
+    f.write("<img src=\""+os.path.abspath(os.path.join(dest_dir,img))+"\">")
+  f.write("</body>\n</html>")
+
 
 def main():
   args = sys.argv[1:]
